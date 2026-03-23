@@ -9,7 +9,7 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 app.use(cors());
-ap.use(express.json());
+app.use(express.json());
 
 // Serve static files in production
 if (process.env.NODE_ENV === 'production') {
