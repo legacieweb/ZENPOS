@@ -1,5 +1,5 @@
 
-const API_URL = 'http://localhost:5000/api';
+const API_URL = import.meta.env.PROD ? '/api' : 'http://localhost:5000/api';
 
 const DEFAULT_USERS = [
   { id: 100, name: 'Alex Thompson', email: 'manager@zenpos.com', password: 'manager', role: 'Manager' },
