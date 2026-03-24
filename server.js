@@ -11,14 +11,6 @@ const PORT = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
-// Serve static files in production
-if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, 'dist')));
-  app.get('*path', (req, res) => {
-    res.sendFile(path.join(__dirname, 'dist', 'index.html'));
-  });
-}
-
 const MOCK_CATEGORIES = [
   { id: 1, name: 'Burgers' },
   { id: 2, name: 'Drinks' },
@@ -64,12 +56,11 @@ let sales = [
   }
 ];
 
-// Get all sales
+// API routes - MUST be registered before the catch-all wildcard route
 app.get('/api/sales', (req, res) => {
   res.json(sales);
 });
 
-// Create a new sale
 app.post('/api/sales', (req, res) => {
   const newSale = {
     ...req.body,
@@ -80,15 +71,22 @@ app.post('/api/sales', (req, res) => {
   res.status(201).json(newSale);
 });
 
-// Get all products
 app.get('/api/products', (req, res) => {
   res.json(MOCK_PRODUCTS);
 });
 
-// Get all categories
 app.get('/api/categories', (req, res) => {
   res.json(MOCK_CATEGORIES);
 });
+
+// Serve static files in production
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(path.join(__dirname, 'dist')));
+  // Express 5 requires named wildcard parameters (*path instead of *)
+  app.get('*path', (req, res) => {
+    res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+  });
+}
 
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
