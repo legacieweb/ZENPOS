@@ -6,9 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "start": "NODE_ENV=production node server.js",
-    "start:dev": "concurrently \"npm run dev\" \"npm run server\"",
-    "build": "vite build",
+npm run start    "start:dev": "concurrently \"npm run dev\" \"npm run server\"",
     "lint": "eslint .",
     "preview": "vite preview"
   },

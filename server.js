@@ -3,14 +3,19 @@ import cors from 'cors';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
+// Fix __dirname for ES modules
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const app = express();
-const PORT = process.env.PORT || 5000;
 
+// ✅ Use port 3000 for Coolify
+const PORT = process.env.PORT || 3000;
+
+// Middleware
 app.use(cors());
 app.use(express.json());
 
+// Mock Data
 const MOCK_CATEGORIES = [
   { id: 1, name: 'Burgers' },
   { id: 2, name: 'Drinks' },
@@ -34,29 +39,29 @@ const MOCK_PRODUCTS = [
   { id: 13, name: 'Apple Pie', price: 4.99, category_id: 4, category_name: 'Desserts', image_url: 'https://images.unsplash.com/photo-1568571780765-9276ac8b75a2', stock_level: 20 }
 ];
 
-// Mock sales data for Manager and Staff
+// Mock Sales
 let sales = [
-  { 
-    id: 'TRX-V8S9A1K2L', 
-    user_id: 100, 
-    items: [{ product_id: 1, name: 'Classic Beef Burger', quantity: 2, unit_price: 8.99 }], 
-    total_amount: 17.98, 
-    tax_amount: 1.44, 
-    payment_method: 'Simulated Pay', 
-    date: new Date(Date.now() - 3600000).toISOString() 
+  {
+    id: 'TRX-V8S9A1K2L',
+    user_id: 100,
+    items: [{ product_id: 1, name: 'Classic Beef Burger', quantity: 2, unit_price: 8.99 }],
+    total_amount: 17.98,
+    tax_amount: 1.44,
+    payment_method: 'Simulated Pay',
+    date: new Date(Date.now() - 3600000).toISOString()
   },
-  { 
-    id: 'TRX-P4M7N2Q8X', 
-    user_id: 101, 
-    items: [{ product_id: 5, name: 'Iced Coffee', quantity: 3, unit_price: 3.50 }], 
-    total_amount: 10.50, 
-    tax_amount: 0.84, 
-    payment_method: 'Simulated Pay', 
-    date: new Date(Date.now() - 7200000).toISOString() 
+  {
+    id: 'TRX-P4M7N2Q8X',
+    user_id: 101,
+    items: [{ product_id: 5, name: 'Iced Coffee', quantity: 3, unit_price: 3.50 }],
+    total_amount: 10.50,
+    tax_amount: 0.84,
+    payment_method: 'Simulated Pay',
+    date: new Date(Date.now() - 7200000).toISOString()
   }
 ];
 
-// API routes - MUST be registered before the catch-all wildcard route
+// API Routes
 app.get('/api/sales', (req, res) => {
   res.json(sales);
 });
@@ -79,15 +84,22 @@ app.get('/api/categories', (req, res) => {
   res.json(MOCK_CATEGORIES);
 });
 
-// Serve static files in production
+// Health check (VERY IMPORTANT for Coolify)
+app.get('/', (req, res) => {
+  res.send('Server is running');
+});
+
+// Serve frontend in production
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, 'dist')));
-  // Express 5 requires named wildcard parameters (*path instead of *)
-  app.get('*path', (req, res) => {
+
+  // ✅ Fixed wildcard route
+  app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'dist', 'index.html'));
   });
 }
 
+// Start server
 app.listen(PORT, '0.0.0.0', () => {
-  console.log(`Server running on ${PORT}`);
+  console.log(`🚀 Server running on port ${PORT}`);
 });
