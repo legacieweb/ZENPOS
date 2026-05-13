@@ -1,12 +1,28 @@
 services:
+  # Backend API Service
   - type: web
-    name: point-of-sale
+    name: zenpos-api
     env: node
-    buildCommand: npm install --legacy-peer-deps && npm run build
-    startCommand: npm run start:production
-    autoDeploy: true
+    plan: free
+    buildCommand: npm install
+    startCommand: node server.js
     envVars:
       - key: NODE_ENV
         value: production
-      - key: PORT
-        value: 10000
+
+  # Frontend Static Site
+  - type: static
+    name: zenpos-ui
+    plan: free
+    buildCommand: npm install && npm run build
+    staticPublishPath: ./dist
+    envVars:
+      - key: VITE_API_URL
+        # This will need to be the external URL of the API service
+        # Render doesn't easily provide the external URL via 'fromService' for static sites
+        # so you may need to update this in the Render dashboard after the first deploy
+        value: https://zenpos-api.onrender.com/api
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html

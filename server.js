@@ -1,10 +1,5 @@
 import express from 'express';
 import cors from 'cors';
-import path from 'path';
-import { fileURLToPath } from 'url';
-
-// Fix __dirname for ES modules
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const app = express();
 
@@ -88,16 +83,6 @@ app.get('/api/categories', (req, res) => {
 app.get('/', (req, res) => {
   res.send('Server is running');
 });
-
-// Serve frontend in production
-if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, 'dist')));
-
-  // ✅ Fixed wildcard route
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'dist', 'index.html'));
-  });
-}
 
 // Start server
 app.listen(PORT, '0.0.0.0', () => {
